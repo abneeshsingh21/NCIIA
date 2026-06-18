@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Radio, Briefcase, AlertTriangle,
   Search, Shield, Wifi, WifiOff, Loader2, Bot, Globe, Target, Crosshair, Fingerprint,
+  Link2, Image, Bitcoin,
 } from 'lucide-react';
 import { useWebSocket } from '../context/WebSocketContext';
 
@@ -28,7 +29,12 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/ai',      label: 'AI Analyst',    icon: Bot,       divider: true, badge: 'AI' },
   { to: '/attack',  label: 'ATT\u0026CK Map',     icon: Target },
   { to: '/hunters',     label: 'Hunter Agents',    icon: Crosshair,    badge: 'NEW' },
-  { to: '/investigate', label: 'Scam Investigator', icon: Fingerprint,  badge: 'HOT' },
+  // Investigation Suite
+  { to: '/investigate', label: 'Scam Investigator', icon: Fingerprint,  divider: true, badge: 'HOT' },
+  { to: '/tracker',     label: 'Canary Tracker',    icon: Link2,        badge: 'NEW' },
+  { to: '/exif',        label: 'EXIF Forensics',    icon: Image },
+  { to: '/darkweb',     label: 'Dark Web Scanner',  icon: Globe },
+  { to: '/crypto',      label: 'Crypto Tracer',     icon: Bitcoin },
 ];
 
 function WsStatusBadge() {

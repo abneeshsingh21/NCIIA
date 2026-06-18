@@ -29,6 +29,8 @@ from nciia.api.routes.enrichment import router as enrichment_router
 from nciia.api.routes.attack import router as attack_router
 from nciia.api.routes.advanced import router as advanced_router
 from nciia.api.routes.investigate import router as investigate_router
+from nciia.api.routes.tracker import router as tracker_router
+from nciia.api.routes.osint_intel import router as osint_intel_router
 from nciia.api.websocket import websocket_router
 from nciia.api.middleware import APIKeyMiddleware, RateLimitMiddleware
 from nciia.db import get_database, close_database
@@ -175,6 +177,8 @@ def create_app() -> FastAPI:
     app.include_router(attack_router,       prefix="/api/attack",       tags=["MITRE ATT&CK"])
     app.include_router(advanced_router,     prefix="/api/advanced",     tags=["Advanced Intelligence"])
     app.include_router(investigate_router,  tags=["Scammer Investigation"])
+    app.include_router(tracker_router,      tags=["Canary Tracker"])
+    app.include_router(osint_intel_router)
     app.include_router(websocket_router,    prefix="/ws",               tags=["WebSocket"])
 
     # ── Global exception handler ──────────────────────────────────────────

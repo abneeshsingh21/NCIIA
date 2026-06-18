@@ -20,6 +20,10 @@ const AttackMap          = lazy(() => import('./pages/AttackMap'));
 const EnrichmentExplorer = lazy(() => import('./pages/EnrichmentExplorer'));
 const HunterAgents       = lazy(() => import('./pages/HunterAgents'));
 const ScamInvestigator   = lazy(() => import('./pages/ScamInvestigator'));
+const CanaryTracker      = lazy(() => import('./pages/CanaryTracker'));
+const ExifForensics      = lazy(() => import('./pages/ExifForensics'));
+const DarkWebScanner     = lazy(() => import('./pages/DarkWebScanner'));
+const CryptoTracer       = lazy(() => import('./pages/CryptoTracer'));
 
 function PageLoader() {
   return (
@@ -55,6 +59,10 @@ export default function App() {
                       <Route path="/enrichment" element={<EnrichmentExplorer />} />
                       <Route path="/hunters"    element={<HunterAgents />} />
                       <Route path="/investigate" element={<ScamInvestigator />} />
+                      <Route path="/tracker"     element={<CanaryTracker />} />
+                      <Route path="/exif"        element={<ExifForensics />} />
+                      <Route path="/darkweb"     element={<DarkWebScanner />} />
+                      <Route path="/crypto"      element={<CryptoTracer />} />
                     </Routes>
                   </Suspense>
                 </main>
