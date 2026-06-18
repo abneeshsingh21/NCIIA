@@ -310,20 +310,7 @@ export const unblockThreat = (ioc: string) =>
 
 // Fetch live threats in the format expected by ThreatIntelligence page
 export const fetchLiveThreats = async (limit = 100): Promise<LiveThreatsResponse> => {
-  const threats = await fetchThreats({ limit, active_only: false });
-  const stats: ThreatStats = {
-    total: threats.length,
-    blocked: threats.filter((t) => t.is_blocked).length,
-    by_severity: threats.reduce<Record<string, number>>((acc, t) => {
-      acc[t.severity] = (acc[t.severity] ?? 0) + 1;
-      return acc;
-    }, {}),
-    by_source: threats.reduce<Record<string, number>>((acc, t) => {
-      acc[t.source] = (acc[t.source] ?? 0) + 1;
-      return acc;
-    }, {}),
-  };
-  return { threats, stats, fetched_at: new Date().toISOString() };
+  return request<LiveThreatsResponse>(`/api/threats/live?limit=${limit}`);
 };
 
 const severityFromSignal = (signal: Signal, index: number): Alert['level'] => {

@@ -19,6 +19,7 @@ const AiAnalyst          = lazy(() => import('./pages/AiAnalyst'));
 const AttackMap          = lazy(() => import('./pages/AttackMap'));
 const EnrichmentExplorer = lazy(() => import('./pages/EnrichmentExplorer'));
 const HunterAgents       = lazy(() => import('./pages/HunterAgents'));
+const ScamInvestigator   = lazy(() => import('./pages/ScamInvestigator'));
 
 function PageLoader() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
                       <Route path="/attack"     element={<AttackMap />} />
                       <Route path="/enrichment" element={<EnrichmentExplorer />} />
                       <Route path="/hunters"    element={<HunterAgents />} />
+                      <Route path="/investigate" element={<ScamInvestigator />} />
                     </Routes>
                   </Suspense>
                 </main>
