@@ -113,6 +113,8 @@ a:hover { text-decoration: underline; }
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
 }
 .sidebar-logo {
   padding: 20px 16px 16px;
@@ -138,7 +140,16 @@ a:hover { text-decoration: underline; }
   display: flex;
   flex-direction: column;
   gap: 2px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Custom slim scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,255,136,0.2) transparent;
 }
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(0,255,136,0.2); border-radius: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb:hover { background: rgba(0,255,136,0.4); }
 .nav-item {
   display: flex;
   align-items: center;

@@ -24,7 +24,9 @@ C++ performance engine · FastAPI backend · React dashboard · Real AI analyst.
 - [Overview](#-overview)
 - [Architecture](#-architecture)
 - [Capabilities](#-capabilities)
+- [Canary Tracker — Advanced OSINT](#-canary-tracker--advanced-osint)
 - [Quick Start](#-quick-start)
+- [One-Click Launcher](#-one-click-launcher)
 - [Configuration](#-configuration)
 - [API Reference](#-api-reference)
 - [Dashboard](#-dashboard)
@@ -47,6 +49,7 @@ C++ performance engine · FastAPI backend · React dashboard · Real AI analyst.
 - **Real ML threat scoring** — scikit-learn RandomForest + DBSCAN actor clustering
 - **Streaming AI analyst (ARIA)** — Groq-powered LLaMA-3.3-70B with RAG over live database
 - **C++ stylometry engine** — High-performance text fingerprinting via native DLL
+- **Canary Tracker** — Advanced stealth link tracking with GPS capture, IP OSINT, carrier detection
 
 This is **not a demo**. Every feature connects to real APIs, real ML models, and real data.
 
@@ -69,6 +72,7 @@ This is **not a demo**. Every feature connects to real APIs, real ML models, and
 │              │  Hunter Agents (async)   │  Hunter Agent Monitor │
 │              │  LLM Analyst (Groq/SSE)  │  Force Graph (3D)     │
 │              │  Username Enumeration    │  Threat Globe         │
+│              │  Canary Tracker OSINT    │  Canary Tracker UI    │
 └──────────────┴──────────────────────────┴───────────────────────┘
          ↑                  ↑                        ↑
      CMake/MSVC         FastAPI/Uvicorn          npm run dev
@@ -85,6 +89,9 @@ OSINT Sources → Collector → SQLite → Enrichment Pipeline → Risk Score
                             WebSocket Bus  ←─────────────  Hunter Agents
                                   ↓
                          React Dashboard ← SSE ← LLM Analyst (ARIA)
+
+Canary Link Click → IP Extract (Cloudflare headers) → GeoIP + OSINT
+                 → GPS Capture (browser geolocation) → Dashboard Hit
 ```
 
 ---
@@ -113,7 +120,7 @@ OSINT Sources → Collector → SQLite → Enrichment Pipeline → Risk Score
 
 ### Autonomous Hunters
 | Agent | Trigger | Capability |
-|-------|---------|-----------|
+|-------|---------|-----------| 
 | `PivotHunter` | Every 10 min | Auto-pivots IOCs via enrichment graph |
 | `PatternHunter` | Every 5 min | ATT&CK tactic spike detection |
 | `DarkWebMonitor` | Every 15 min | Paste site monitoring for watched targets |
@@ -129,12 +136,78 @@ OSINT Sources → Collector → SQLite → Enrichment Pipeline → Risk Score
 
 ---
 
+## 🎯 Canary Tracker — Advanced OSINT
+
+The **Canary Tracker** is a stealth link intelligence system that captures actionable OSINT the moment a target opens a tracking link. It is designed for legal, ethical use by investigators, security researchers, and law enforcement support.
+
+### What It Captures
+
+| Data Point | Method | Accuracy |
+|-----------|--------|----------|
+| **Real public IP** | Cloudflare `cf-connecting-ip` header (server-side) | 100% — always works |
+| **ISP / Internet Provider** | ip-api.com multi-provider GeoIP | High |
+| **Organization / Company** | ipinfo.io + WHOIS ASN lookup | High |
+| **Mobile Carrier** | ipinfo.io carrier API | High (mobile networks) |
+| **City, Region, Country** | ip-api.com + ipwho.is fallback | ~70-80% city accuracy |
+| **Postal Code** | GeoIP enrichment | Medium |
+| **ASN (Autonomous System)** | ip-api.com `as` field | 100% |
+| **Hostname** | Reverse DNS via ipinfo.io | Where available |
+| **VPN / Proxy Detection** | ip-api.com `proxy` + `hosting` flags | High |
+| **Mobile vs Datacenter** | ip-api.com `mobile` + `hosting` flags | High |
+| **Approximate Map Location** | IP-based lat/lon → Google Maps link | City-level |
+| **GPS Exact Location** | Browser Geolocation API (user gesture) | ±10 metres |
+| **Device Browser Timezone** | JS `Intl.DateTimeFormat` | Exact |
+| **Language / Locale** | JS `navigator.language` | Exact |
+| **Screen Resolution & DPR** | JS `screen.width/height` | Exact |
+| **User-Agent (OS/Browser)** | HTTP header (server-side) | Exact |
+| **Referrer URL** | HTTP `Referer` header | Where present |
+
+### How GPS Capture Works
+
+The tracking page displays a **realistic "Secure Document — View Document"** card (indistinguishable from a legitimate document portal). When the target taps the button:
+
+1. The browser shows its native **"This site wants to know your location"** permission popup
+2. If the target taps **Allow** → exact GPS coordinates (±10m) are captured and a Google Maps deeplink is generated in your dashboard
+3. If the target taps **Deny** → all IP/ISP/GeoIP data is still captured silently in the background
+4. The page then redirects to whatever innocent URL you configured (e.g., Google)
+
+> **Note**: IP-based geolocation maps to the ISP's regional server, which may be a different city. GPS is the only way to get the real physical location.
+
+### Tunnel Setup (Cloudflare)
+
+The tracker requires a public HTTPS URL so mobile devices can reach it. We use Cloudflare Tunnel (free, no account required):
+
+```bash
+# Download cloudflared.exe and place in project root, then run:
+cloudflared.exe tunnel --url http://localhost:8000 --edge-ip-version 4
+# Copy the generated URL (e.g. https://xxxx.trycloudflare.com)
+# Paste into Canary Tracker → "Your Public Base URL" field
+```
+
+### Dashboard Display
+
+Each hit in the dashboard shows:
+- 📍 **Green GPS panel** with exact coordinates and "Open in Google Maps" button (if GPS granted)
+- 🌐 **IP Intelligence**: ISP, Organization, Carrier, ASN, Postal Code, Hostname
+- 🔒 **VPN/Proxy/Datacenter flags** auto-detected
+- 📱 **Mobile network badge** for cellular connections
+- 🗺 **Approximate map link** (IP-based) always shown as fallback
+- 🖥 **Device & Browser** parsed from User-Agent
+- ⏱ **Timezone & Language** from browser JS
+- 🔗 **Referrer URL** showing where the link was opened from
+
+### Legal Notice
+
+Canary links should only be deployed against individuals you have legal authority to investigate (e.g., active scammers, phishing attackers). The ISP/carrier + GPS data provides everything needed for a formal report to law enforcement, who can then obtain the subscriber's legal identity via court order. **Do not use this tool to track individuals without lawful justification.**
+
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 | Tool | Version | Purpose |
-|------|---------|---------|
+|------|---------|---------| 
 | Python | 3.10+ | Backend runtime |
 | Node.js | 18+ | Dashboard |
 | CMake | 3.20+ | C++ build |
@@ -163,17 +236,10 @@ cmake --build build --config Release
 ```bash
 cd nciia-core
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# Linux/macOS:
-source .venv/bin/activate
-
+.venv\Scripts\activate          # Windows
 pip install -e ".[dev]"
-cp .env.example .env
-# Edit .env — add your API keys
-python run_server.py
-# API available at http://localhost:8000
-# Docs at http://localhost:8000/docs (debug mode)
+cp .env.example .env            # Fill in your API keys
+python run_server.py            # Starts on :8000
 ```
 
 ### 4. Dashboard Setup
@@ -181,236 +247,209 @@ python run_server.py
 ```bash
 cd nciia-dashboard
 npm install
-cp .env.example .env
-# Edit .env if backend is not on localhost:8000
-npm run dev
-# Dashboard at http://localhost:5173
+npm run dev                     # Starts on :5173
 ```
+
+### 5. Open Dashboard
+
+Navigate to **http://localhost:5173**
 
 ---
 
-## ⚙ Configuration
+## ⚡ One-Click Launcher
 
-### Backend `.env` (nciia-core)
+For convenience, a `START_NCIIA.bat` launcher is included in the project root. Double-click it to start all three services (backend, Cloudflare tunnel, frontend) simultaneously in separate terminal windows:
 
-```env
-# ── Application ──────────────────────────────────
-NCIIA_APP_NAME=N-CIIA
-NCIIA_ENVIRONMENT=production          # development|staging|production
-NCIIA_VERSION=1.0.0
-
-# ── API Server ───────────────────────────────────
-NCIIA_API_HOST=0.0.0.0
-NCIIA_API_PORT=8000
-NCIIA_API_DEBUG=false
-NCIIA_API_CORS_ORIGINS=http://localhost:5173
-NCIIA_API_API_KEY=                    # Optional: enforce X-API-Key auth
-NCIIA_API_RATE_LIMIT=100              # Requests per window
-NCIIA_API_RATE_WINDOW=60             # Window in seconds
-
-# ── Database ─────────────────────────────────────
-NCIIA_DATABASE_PATH=data/db/nciia.db
-
-# ── LLM (ARIA analyst) ───────────────────────────
-NCIIA_LLM_PROVIDER=groq               # groq|openai|ollama
-NCIIA_LLM_API_KEY=gsk_...            # Groq API key
-# NCIIA_LLM_BASE_URL=http://localhost:11434  # Ollama
-
-# ── IOC Enrichment API Keys ──────────────────────
-NCIIA_VT_API_KEY=                    # VirusTotal (optional, free tier works)
-NCIIA_ABUSEIPDB_API_KEY=             # AbuseIPDB
-NCIIA_SHODAN_API_KEY=                # Shodan (optional, uses free InternetDB)
-NCIIA_IPINFO_TOKEN=                  # ipinfo.io (optional, 50k/mo free)
-NCIIA_HIBP_API_KEY=                  # HaveIBeenPwned (required for email checks)
-
-# ── Logging ──────────────────────────────────────
-NCIIA_LOGGING_LEVEL=INFO
-NCIIA_LOGGING_FORMAT=json
+```
+START_NCIIA.bat
 ```
 
-### Dashboard `.env` (nciia-dashboard)
+The launcher will:
+1. Start the Python backend on port 8000
+2. Start a Cloudflare tunnel and display the public URL
+3. Start the React dashboard on port 5173
+4. Open the dashboard in your browser
+
+> After launch, check the **N-CIIA Tunnel** window for your `trycloudflare.com` URL to use in Canary Tracker.
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables (`nciia-core/.env`)
 
 ```env
-VITE_API_BASE_URL=http://localhost:8000
-VITE_WS_URL=ws://localhost:8000
-VITE_APP_TITLE=N-CIIA
+# AI Analyst
+GROQ_API_KEY=your_groq_key           # LLaMA-3.3-70B analyst (free tier available)
+
+# IOC Enrichment
+VIRUSTOTAL_API_KEY=your_vt_key       # VirusTotal v3
+ABUSEIPDB_API_KEY=your_abuse_key     # AbuseIPDB
+SHODAN_API_KEY=your_shodan_key       # Shodan (optional)
+
+# Database
+DATABASE_URL=sqlite+aiosqlite:///./nciia.db
+
+# CORS
+ALLOWED_ORIGINS=http://localhost:5173
 ```
 
-> **Note:** All API keys are optional. Without them, the corresponding enrichment source will return a graceful error and the platform remains fully functional with the available sources.
+### GeoIP Providers
+
+The Canary Tracker uses a **3-provider fallback chain** for maximum reliability:
+
+1. **ip-api.com** — Primary (free, 45 fields including mobile/proxy/hosting flags)
+2. **ipinfo.io** — Secondary enrichment (carrier, hostname, org, postal)
+3. **ipwho.is** — Tertiary fallback (free, no rate limit)
+
+No API keys required for GeoIP — all providers have free tiers sufficient for investigation use.
 
 ---
 
 ## 📡 API Reference
 
-Full interactive docs available at `http://localhost:8000/docs` (when `NCIIA_API_DEBUG=true`).
+### Canary Tracker Endpoints
 
-### Core Endpoints
+| Method | Endpoint | Description |
+|--------|---------|-------------|
+| `POST` | `/api/tracker/generate` | Generate a new stealth tracking link |
+| `GET` | `/t/{tracking_id}` | The tracking URL (serves capture page) |
+| `POST` | `/api/tracker/fingerprint/{id}` | Receives JS payload (GPS, screen, tz) |
+| `GET` | `/api/tracker/links` | List all generated links with hit counts |
+| `GET` | `/api/tracker/hits/{tracking_id}` | Get all hits for a specific link |
+| `DELETE` | `/api/tracker/links/{tracking_id}` | Delete a link and its hit history |
+| `GET` | `/api/tracker/debug` | Show all headers and extracted IP (debug) |
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Liveness probe |
-| `GET` | `/health/ready` | Readiness probe (K8s compatible) |
-| `GET` | `/api/signals` | List ingested signals |
-| `GET` | `/api/personas` | List actor personas |
-| `GET` | `/api/cases` | List investigation cases |
-| `GET` | `/api/alerts` | List active alerts |
-| `WS` | `/ws/events` | Real-time event stream |
-
-### Advanced Endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/api/enrichment/enrich` | Enrich single IOC (all sources) |
-| `POST` | `/api/enrichment/enrich/bulk` | Enrich up to 20 IOCs in parallel |
-| `POST` | `/api/attack/tag` | Tag text with ATT&CK techniques |
-| `GET` | `/api/attack/navigator/layer` | Export ATT&CK Navigator JSON |
-| `GET` | `/api/attack/signals/tagged` | Signals with technique mapping |
-| `POST` | `/api/advanced/query` | Stream ARIA analyst response (SSE) |
-| `POST` | `/api/advanced/session/new` | Create analyst session |
-| `POST` | `/api/advanced/report` | Generate intelligence report |
-| `POST` | `/api/advanced/enumerate` | Cross-platform identity enumeration |
-| `GET` | `/api/advanced/hunters/stats` | Hunter agent status |
-| `GET` | `/api/advanced/hunters/findings` | All hunter findings |
-| `POST` | `/api/advanced/hunters/start` | Start all hunter agents |
-
-### WebSocket Events
-
-```typescript
-// Subscribe to real-time events
-ws.send(JSON.stringify({ type: 'subscribe', channel: 'threat_update' }))
-ws.send(JSON.stringify({ type: 'subscribe', channel: 'new_signal' }))
-ws.send(JSON.stringify({ type: 'subscribe', channel: 'alert' }))
+**Generate Link Request:**
+```json
+{
+  "label": "Invoice PDF",
+  "redirect_url": "https://www.google.com",
+  "public_base": "https://xxxx.trycloudflare.com"
+}
 ```
+
+**Hit Response (example):**
+```json
+{
+  "ip": "122.179.89.171",
+  "timestamp": "2026-06-18T18:27:41Z",
+  "ua": "Mozilla/5.0 (Linux; Android 14; SM-A546E)...",
+  "geo": {
+    "city": "Indore",
+    "regionName": "Madhya Pradesh",
+    "country": "India",
+    "isp": "Bharti Airtel Limited",
+    "org": "AS9498 Bharti Airtel Ltd., Telemedia Services",
+    "as": "AS9498 Bharti Airtel Ltd.",
+    "mobile": true,
+    "proxy": false,
+    "lat": 22.7196,
+    "lon": 75.8577,
+    "timezone": "Asia/Calcutta",
+    "zip": "452001"
+  },
+  "fingerprint": {
+    "gps": { "lat": 22.71823, "lon": 75.85501, "accuracy": 12.5 },
+    "tz": "Asia/Calcutta",
+    "lang": "en-IN",
+    "screen": { "w": 384, "h": 857, "dpr": 2.8 }
+  }
+}
+```
+
+### Core Intelligence Endpoints
+
+| Method | Endpoint | Description |
+|--------|---------|-------------|
+| `POST` | `/api/ingestion/collect` | Trigger OSINT collection |
+| `GET` | `/api/ingestion/news` | Get latest threat news |
+| `POST` | `/api/ioc/enrich` | Enrich an IOC (IP/domain/hash) |
+| `GET` | `/api/ioc/list` | List all enriched IOCs |
+| `POST` | `/api/cases` | Create investigation case |
+| `GET` | `/api/cases` | List all cases |
+| `GET` | `/api/hunter/status` | Get autonomous agent status |
+| `POST` | `/api/aria/chat` | Stream AI analyst response (SSE) |
+| `GET` | `/api/attribution/clusters` | Get ML actor clusters |
+| `GET` | `/api/attack/heatmap` | MITRE ATT&CK technique frequency |
 
 ---
 
 ## 🖥 Dashboard
 
-The React dashboard has 11 pages:
+The React dashboard provides a unified interface for all N-CIIA capabilities:
 
-| Page | Path | Description |
-|------|------|-------------|
-| Dashboard | `/` | Live threat overview, stats, globe |
-| Personas | `/personas` | Actor profiles and attribution |
-| Signals | `/signals` | Real-time OSINT signal feed |
-| Cases | `/cases` | Investigation case management |
-| Alerts | `/alerts` | Prioritised alert queue |
-| Threat Intel | `/threats` | Threat intelligence feed |
-| OSINT Search | `/osint` | Manual OSINT query interface |
-| **IOC Enrichment** | `/enrichment` | 7-source IOC deep-dive explorer |
-| **AI Analyst** | `/ai` | ARIA streaming chat with RAG |
-| **ATT&CK Map** | `/attack` | MITRE ATT&CK coverage heatmap |
-| **Hunter Agents** | `/hunters` | Autonomous agent monitor |
+| Page | Description |
+|------|-------------|
+| **Overview** | Real-time threat feed, risk score timeline, active alerts |
+| **Canary Tracker** | Generate stealth links, view hits with GPS, IP OSINT, carrier data |
+| **Scam Investigator** | Deep URL/phone/email analysis with IOC enrichment |
+| **EXIF Forensics** | Image metadata extraction and geolocation |
+| **Dark Web Scanner** | Paste site monitoring, breach data search |
+| **Crypto Tracer** | Blockchain address tracking and wallet analysis |
+| **IOC Lab** | Manual IOC enrichment with VirusTotal/AbuseIPDB/Shodan |
+| **ARIA Analyst** | Streaming AI chat with RAG over your investigation database |
+| **ATT&CK Map** | Interactive MITRE ATT&CK heatmap with Navigator export |
+| **Hunter Agents** | Autonomous agent monitor with finding timeline |
+| **Identity Graph** | Force-directed 3D graph of entity relationships |
+| **Threat Globe** | Real-time 3D globe of threat origins |
 
 ---
 
-## 🐳 Deployment
+## 🚢 Deployment
 
-### Docker (Recommended)
+### Development (Default)
 
 ```bash
-# Backend
-docker build -t nciia-core ./nciia-core
-docker run -p 8000:8000 --env-file nciia-core/.env nciia-core
+# Terminal 1: Backend
+cd nciia-core && python run_server.py
 
-# Dashboard (serve built static files)
-cd nciia-dashboard && npm run build
-# Serve dist/ with nginx or any static host
+# Terminal 2: Frontend  
+cd nciia-dashboard && npm run dev
+
+# Terminal 3: Cloudflare Tunnel (for Canary Tracker)
+cloudflared.exe tunnel --url http://localhost:8000 --edge-ip-version 4
 ```
 
-### Docker Compose
+Or simply run `START_NCIIA.bat` from the project root.
 
-```yaml
-version: '3.9'
-services:
-  core:
-    build: ./nciia-core
-    ports: ["8000:8000"]
-    env_file: ./nciia-core/.env
-    volumes:
-      - ./data:/app/data
+### Production
 
-  dashboard:
-    build: ./nciia-dashboard
-    ports: ["3000:80"]
-    depends_on: [core]
-```
-
-### Kubernetes
-
-Health probes are K8s-compatible out of the box:
-
-```yaml
-livenessProbe:
-  httpGet:
-    path: /health
-    port: 8000
-  initialDelaySeconds: 10
-
-readinessProbe:
-  httpGet:
-    path: /health/ready
-    port: 8000
-  initialDelaySeconds: 5
-```
-
-### Reverse Proxy (nginx)
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name nciia.yourdomain.com;
-
-    location /api/ { proxy_pass http://localhost:8000; }
-    location /ws/  { proxy_pass http://localhost:8000; proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; }
-    location /     { root /var/www/nciia/dist; try_files $uri /index.html; }
-}
-```
+For production deployments:
+- Use a **named Cloudflare Tunnel** with a registered domain for a permanent HTTPS URL
+- Deploy backend behind **nginx** or **Caddy** as a reverse proxy
+- Build the frontend with `npm run build` and serve statically
+- Use **PostgreSQL** instead of SQLite for the database
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions of all kinds — bug fixes, new enrichment sources, hunter agents, dashboard components, and documentation.
+We welcome contributions! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a PR.
-
-**Key areas where help is wanted:**
-- 🌐 Additional enrichment sources (GreyNoise, Censys, SecurityTrails)
-- 🤖 New hunter agent types (supply chain monitor, brand abuse detector)
-- 📊 Advanced visualisations (attack timeline, kill-chain animator)
-- 🐧 Linux/macOS C++ build support
-- 🧪 Test coverage expansion
+Key areas for contribution:
+- Additional GeoIP/OSINT data providers
+- New hunter agent logic
+- MITRE ATT&CK technique coverage expansion
+- Additional IOC enrichment sources
+- UI/UX improvements
 
 ---
 
-## 🔒 Security
+## 🔐 Security
 
-Found a vulnerability? Please **do not** open a public issue.
+Please review [SECURITY.md](SECURITY.md) for our security policy and responsible disclosure process.
 
-Read our [Security Policy](SECURITY.md) and report privately via:
-- **GitHub Security Advisories** (preferred): [Report a vulnerability](../../security/advisories/new)
-- **Email**: security@nciia.dev (PGP key in SECURITY.md)
-
-We follow a **90-day responsible disclosure** timeline.
+**Important**: N-CIIA is designed for **lawful, authorized use only**. The Canary Tracker in particular must only be used against individuals you have legal authority to investigate. Unauthorized tracking of individuals may violate privacy laws in your jurisdiction.
 
 ---
 
 ## 📄 License
 
-N-CIIA is released under the **MIT License** — see [LICENSE](LICENSE) for full text.
-
-```
-MIT License — Copyright (c) 2026 N-CIIA Contributors
-Free to use, modify, and distribute with attribution.
-```
+MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
-
-**Built with 🛡️ for the security community**
-
-[Report Bug](../../issues/new?template=bug_report.md) · [Request Feature](../../issues/new?template=feature_request.md) · [Join Discussion](../../discussions)
-
+  <sub>Built with ❤️ for the security community · Report issues · Star if useful</sub>
 </div>
