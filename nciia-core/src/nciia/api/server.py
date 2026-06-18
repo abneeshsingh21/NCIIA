@@ -25,6 +25,9 @@ from nciia.api.routes import (
     signals, personas, cases, evidence,
     assistant, health, ingestion, response, intelligence, threats,
 )
+from nciia.api.routes.enrichment import router as enrichment_router
+from nciia.api.routes.attack import router as attack_router
+from nciia.api.routes.advanced import router as advanced_router
 from nciia.api.websocket import websocket_router
 from nciia.api.middleware import APIKeyMiddleware, RateLimitMiddleware
 from nciia.db import get_database, close_database
@@ -72,6 +75,20 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     await hunter.start()
     logger.info("hunter_started")
 
+    # ── Autonomous Hunter Agents ──────────────────────────────────────────
+    from nciia.hunter.autonomous import get_hunter_manager
+    hunter_mgr = get_hunter_manager()
+    await hunter_mgr.start_all()
+    logger.info("autonomous_hunters_started")
+
+    # ── ML Model warm-up ─────────────────────────────────────────────────
+    try:
+        from nciia.ml.real_scorer import get_model
+        get_model()
+        logger.info("ml_model_loaded")
+    except Exception as e:
+        logger.warning("ml_model_warmup_skipped", error=str(e))
+
     # Record startup time for uptime tracking
     app.state.started_at = time.monotonic()
 
@@ -85,6 +102,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     from nciia.hunter.agent import get_hunter as _gh
     await _gh().stop()
     logger.info("hunter_stopped")
+
+    from nciia.hunter.autonomous import get_hunter_manager as _gam
+    await _gam().stop_all()
+    logger.info("autonomous_hunters_stopped")
 
     await close_database()
     logger.info("application_shutdown")
@@ -149,6 +170,9 @@ def create_app() -> FastAPI:
     app.include_router(response.router,     prefix="/api/response",     tags=["Response"])
     app.include_router(intelligence.router, prefix="/api/intelligence", tags=["Intelligence"])
     app.include_router(threats.router,      prefix="/api/threats",      tags=["Threat Intelligence"])
+    app.include_router(enrichment_router,   prefix="/api/enrichment",   tags=["IOC Enrichment"])
+    app.include_router(attack_router,       prefix="/api/attack",       tags=["MITRE ATT&CK"])
+    app.include_router(advanced_router,     prefix="/api/advanced",     tags=["Advanced Intelligence"])
     app.include_router(websocket_router,    prefix="/ws",               tags=["WebSocket"])
 
     # ── Global exception handler ──────────────────────────────────────────

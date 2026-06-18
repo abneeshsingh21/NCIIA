@@ -1,0 +1,96 @@
+/* ═══════════════════════════════════════════════════════════════
+   ADVANCED PAGES CSS — AI Analyst, ATT&CK Map, Enrichment, Hunters
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── AI Analyst chat ──────────────────────────────────────────── */
+.ai-analyst-page { display:flex; flex-direction:column; height:calc(100vh - var(--ticker-h) - 48px); gap:16px; overflow:hidden; }
+.quick-prompts { flex-shrink:0; }
+.quick-prompts__label { font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.quick-prompts__grid  { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:8px; }
+.quick-prompt-card { padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); font-size:12px; color:var(--text-secondary); text-align:left; cursor:pointer; transition:border-color var(--transition),color var(--transition); }
+.quick-prompt-card:hover { border-color:var(--border-active); color:var(--text-primary); }
+.chat-messages { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:16px; padding:4px 0; }
+.chat-bubble { display:flex; gap:12px; animation:fadeIn .2s ease; }
+.chat-bubble--user { flex-direction:row-reverse; }
+.chat-bubble__avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:var(--bg-tertiary); border:1px solid var(--border-color); }
+.chat-bubble--user .chat-bubble__avatar { background:rgba(0,255,136,.1); border-color:rgba(0,255,136,.3); }
+.chat-bubble__body { max-width:80%; min-width:0; }
+.chat-bubble__meta { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.chat-bubble--user .chat-bubble__meta { flex-direction:row-reverse; }
+.chat-bubble__name { font-size:12px; font-weight:600; color:var(--text-secondary); }
+.chat-bubble__content { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:12px 16px; font-size:13px; line-height:1.7; }
+.chat-bubble--user .chat-bubble__content { background:rgba(0,255,136,.07); border-color:rgba(0,255,136,.2); }
+.cursor-blink { animation:pulse 1s ease infinite; color:var(--accent-primary); }
+/* Markdown */
+.markdown-body h1,.markdown-body h2,.markdown-body h3 { font-weight:600; margin:12px 0 6px; }
+.markdown-body h1{font-size:16px} .markdown-body h2{font-size:14px} .markdown-body h3{font-size:13px}
+.markdown-body p{margin:0 0 8px} .markdown-body ul,.markdown-body ol{padding-left:20px;margin-bottom:8px} .markdown-body li{margin-bottom:3px}
+.markdown-body code{background:var(--bg-primary);padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent-primary)}
+.markdown-body pre{background:var(--bg-primary);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:12px;overflow-x:auto;margin:8px 0}
+.markdown-body pre code{background:none;color:#c9d1d9;padding:0}
+.markdown-body blockquote{border-left:3px solid var(--accent-primary);padding-left:12px;color:var(--text-secondary);margin:8px 0}
+.markdown-body table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+.markdown-body th,.markdown-body td{padding:6px 10px;border:1px solid var(--border-color)}
+.markdown-body th{background:var(--bg-tertiary);font-weight:600}
+.markdown-body a{color:var(--accent-secondary)} .markdown-body hr{border:none;border-top:1px solid var(--border-color);margin:12px 0}
+/* Chat input */
+.chat-input-bar { flex-shrink:0; display:flex; flex-direction:column; gap:8px; padding:12px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); }
+.chat-input { width:100%; background:transparent; border:none; color:var(--text-primary); font-size:13px; font-family:inherit; resize:none; outline:none; line-height:1.6; }
+.chat-input::placeholder { color:var(--text-muted); }
+.chat-input-bar__actions { display:flex; justify-content:space-between; align-items:center; }
+
+/* ── ATT&CK heatmap ───────────────────────────────────────────── */
+.attack-heatmap { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; margin-top:4px; }
+.attack-tactic-cell { padding:14px 16px; border-radius:var(--radius-sm); border:1px solid var(--border-color); background:var(--bg-secondary); cursor:default; transition:all var(--transition); display:flex; flex-direction:column; gap:6px; }
+.attack-tactic-cell--active { cursor:pointer; }
+.attack-tactic-cell--active:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,.3); }
+.attack-tactic-cell--selected { border-width:2px; }
+.attack-tactic-cell__name  { font-size:11px; font-weight:600; color:var(--text-secondary); }
+.attack-tactic-cell__count { font-size:24px; font-weight:700; color:var(--text-muted); }
+.tag--link { text-decoration:none; }
+.tag--link:hover { background:var(--bg-tertiary); color:var(--accent-secondary); }
+
+/* ── IOC Enrichment ───────────────────────────────────────────── */
+.enrich-form { display:flex; gap:10px; align-items:center; }
+.enrich-demo-iocs { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--border-color); }
+.enrich-result { display:flex; flex-direction:column; gap:16px; animation:fadeIn .25s ease; }
+.enrich-result__ioc-row { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.enrich-result__ioc { font-family:'JetBrains Mono',monospace; font-size:18px; font-weight:700; color:var(--text-primary); word-break:break-all; }
+.enrich-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+.info-row { display:flex; align-items:baseline; gap:12px; padding:7px 0; border-bottom:1px solid rgba(48,54,68,.4); font-size:13px; }
+.info-row:last-child { border-bottom:none; }
+.info-row--col { flex-direction:column; align-items:flex-start; gap:4px; }
+.info-row__label { font-size:11px; font-weight:500; color:var(--text-muted); text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; min-width:90px; }
+.info-row__value { color:var(--text-primary); word-break:break-word; }
+.score-gauge { display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; }
+.score-gauge__svg { width:100px; height:60px; }
+.score-gauge__label { font-size:11px; font-weight:700; letter-spacing:.5px; }
+
+/* ── Hunter Agents ────────────────────────────────────────────── */
+.hunter-agents-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+.hunter-agent-card { transition:border-color var(--transition); }
+.hunter-agent-card--running { border-color:rgba(0,255,136,.3); box-shadow:0 0 12px rgba(0,255,136,.06); }
+.hunter-agent-card__header { display:flex; align-items:flex-start; gap:12px; margin-bottom:12px; }
+.hunter-agent-card__icon  { font-size:28px; line-height:1; flex-shrink:0; }
+.hunter-agent-card__info  { flex:1; min-width:0; }
+.hunter-agent-card__name  { font-size:14px; font-weight:600; margin:0 0 4px; }
+.hunter-agent-card__desc  { margin:0; }
+.hunter-agent-card__stats { display:flex; gap:16px; flex-wrap:wrap; }
+.hunter-stat { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--text-secondary); }
+.skeleton-card { height:160px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); background:linear-gradient(90deg,var(--bg-tertiary) 0%,rgba(255,255,255,.04) 50%,var(--bg-tertiary) 100%); background-size:400px 100%; animation:shimmer 1.4s ease infinite; }
+.findings-feed { display:flex; flex-direction:column; gap:12px; }
+.finding-card { padding:14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-sm); animation:fadeIn .2s ease; }
+.finding-card__header { margin-bottom:10px; }
+.finding-card__meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px; }
+.finding-card__title { font-size:14px; font-weight:600; margin:0 0 4px; }
+.finding-card__desc { margin:0; }
+.finding-card__section { margin-top:10px; padding-top:10px; border-top:1px solid var(--border-color); }
+
+/* ── Responsive additions ─────────────────────────────────────── */
+@media (max-width:900px) {
+  .enrich-grid { grid-template-columns:1fr; }
+  .hunter-agents-grid { grid-template-columns:1fr; }
+  .attack-heatmap { grid-template-columns:repeat(2,1fr); }
+  .quick-prompts__grid { grid-template-columns:1fr; }
+  .chat-bubble__body { max-width:95%; }
+}
