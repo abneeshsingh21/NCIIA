@@ -1,0 +1,57 @@
+# OSINT Source Configuration
+# Defines available OSINT sources and their parameters
+
+sources:
+  # Web Search Sources
+  web_search:
+    enabled: true
+    name: "Web Search Monitor"
+    description: "Monitors search engine results for specified queries"
+    rate_limit: 10 # requests per minute
+    check_interval: 600 # seconds
+
+  # Paste Site Monitoring
+  paste_sites:
+    enabled: true
+    name: "Paste Site Monitor"
+    description: "Monitors public paste sites for relevant content"
+    sites:
+      - name: "Pastebin"
+        url: "https://pastebin.com"
+        api_available: true
+      - name: "GitHub Gist"
+        url: "https://gist.github.com"
+        api_available: true
+    rate_limit: 5
+    check_interval: 300
+
+  # Domain Records
+  domain_records:
+    enabled: true
+    name: "Domain WHOIS Monitor"
+    description: "Tracks WHOIS record changes"
+    rate_limit: 2
+    check_interval: 3600
+
+  # Forum Monitoring
+  forum:
+    enabled: true
+    name: "Forum Monitor"
+    description: "Monitors public forums for relevant discussions"
+    rate_limit: 5
+    check_interval: 900
+
+# Global Rate Limits
+global:
+  max_requests_per_minute: 30
+  max_concurrent_requests: 5
+  backoff_on_error: true
+  backoff_base_seconds: 60
+  backoff_max_seconds: 3600
+
+# Respect Terms of Service
+compliance:
+  respect_robots_txt: true
+  respect_rate_limits: true
+  no_authentication_bypass: true
+  public_data_only: true

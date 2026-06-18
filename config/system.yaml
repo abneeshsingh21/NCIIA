@@ -1,0 +1,76 @@
+# N-CIIA System Configuration
+# This file controls all system settings
+
+# Application
+app_name: "N-CIIA"
+version: "0.1.0"
+environment: "development"
+
+# Paths
+data_dir: "data"
+cache_dir: "data/cache"
+exports_dir: "data/exports"
+
+# Database
+database:
+  path: "data/db/nciia.db"
+  echo: false
+  pool_size: 5
+
+# API Server
+api:
+  host: "0.0.0.0"
+  port: 8000
+  debug: true
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:5173"
+  rate_limit: 100
+
+# OSINT Collection
+osint:
+  enabled_sources:
+    - "web_search"
+    - "paste_sites"
+    - "forum"
+    - "domain_records"
+  default_interval_seconds: 300
+  max_concurrent_watchers: 10
+  rate_limit_per_source: 10
+  respect_robots_txt: true
+  user_agent: "N-CIIA OSINT Collector/0.1.0 (Research)"
+  request_timeout: 30
+
+# Machine Learning
+ml:
+  models_dir: "models"
+  use_gpu: false
+  max_batch_size: 32
+  inference_threads: 4
+  min_confidence_for_alert: 0.7
+  min_confidence_for_action: 0.85
+
+# LLM Integration
+llm:
+  provider: "groq"
+  model_name: "llama-3.1-8b-instant"
+  api_base: "https://api.groq.com/openai/v1"
+  max_tokens: 2048
+  temperature: 0.1
+  timeout: 60
+
+# Logging
+logging:
+  level: "INFO"
+  format: "json"
+  file_path: "logs/nciia.log"
+  max_size_mb: 100
+  backup_count: 5
+  include_timestamp: true
+
+# Security
+security:
+  enable_audit_log: true
+  session_timeout_minutes: 60
+  max_failed_attempts: 5
+  hash_algorithm: "sha256"
