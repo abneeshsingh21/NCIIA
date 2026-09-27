@@ -258,7 +258,7 @@ export default function CanaryTracker() {
                   <div className="info-row"><span className="info-row__label">Timezone</span><span>{typeof geo?.timezone === 'object' ? (geo?.timezone as any)?.id : geo?.timezone || '—'}</span></div>
 
                   {/* IP-based map link (always available) */}
-                  {geo?.lat && geo.lat !== 0 && !fp?.gps && (
+                  {geo?.lat != null && geo?.lon != null && geo.lat !== 0 && !fp?.gps && (
                     <div className="info-row"><span className="info-row__label">Approx. Location</span>
                       <a href={`https://www.google.com/maps?q=${geo.lat},${geo.lon}`} target="_blank" rel="noopener noreferrer" className="link">
                         {geo.lat.toFixed(4)}, {geo.lon.toFixed(4)} → Open in Maps (IP-based)
