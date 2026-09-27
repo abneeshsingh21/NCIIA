@@ -137,10 +137,11 @@ def create_app() -> FastAPI:
 
     # ── CORS (strict) ─────────────────────────────────────────────────────
     # In production: set NCIIA_API_CORS_ORIGINS to your exact frontend origin.
-    # Wildcard '*' is NOT permitted here.
+    # Wildcard '*' is NOT permitted here when allow_credentials=True.
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.api.cors_origins,
+        allow_origin_regex=r"^https://.*\.vercel\.app$",
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=["Content-Type", "Authorization", "X-API-Key", "X-Request-ID"],
